@@ -60,6 +60,7 @@ func aStar(rootNode *Node) *Node {
 	// Add children of root node to priority queue
 	priorityQueue = rootNode.children
 
+	flag:
 	for len(priorityQueue) > 0 {
 
 		// Sort priorityQueue
@@ -74,6 +75,13 @@ func aStar(rootNode *Node) *Node {
 			currentNode = priorityQueue[rand.Intn(len(priorityQueue))]
 		} else {
 			currentNode = priorityQueue[0]
+		}
+
+		for _, processedNode := range processedNodes{
+			if processedNode.currentPosition == currentNode.currentPosition {
+				priorityQueue = priorityQueue.removeNodeFromPriorityQueue(currentNode)
+				continue flag
+			}
 		}
 
 		printBoard(currentNode.board)
