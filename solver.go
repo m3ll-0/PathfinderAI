@@ -10,7 +10,12 @@ import (
 
 func DFS(node *Node) *Node {
 
-	printBoard(node.board)
+	// Check if user cancelled
+	if stopSolver {
+		return node
+	}
+
+	//printBoard(node.board)
 	nodesVisitedCounter++
 
 	// Update current board in browser
@@ -63,6 +68,11 @@ func aStar(rootNode *Node) *Node {
 	flag:
 	for len(priorityQueue) > 0 {
 
+		// Check if user cancelled
+		if stopSolver {
+			return currentNode
+		}
+
 		// Sort priorityQueue
 		sortByDistanceFrom(priorityQueue)
 
@@ -84,7 +94,7 @@ func aStar(rootNode *Node) *Node {
 			}
 		}
 
-		printBoard(currentNode.board)
+		//printBoard(currentNode.board)
 
 		// Update current board in browser
 		fillGridFromBoard(currentNode.board)
@@ -117,7 +127,6 @@ func aStar(rootNode *Node) *Node {
 
 func updateCoordinateHeatMap(coordinateHeatMap map[Coordinate]int, node *Node){
 	coordinateHeatMap[node.currentPosition] += 1
-	println(fmt.Sprint(coordinateHeatMap))
 }
 
 func sortByDistanceFrom(nodes []*Node) {
@@ -154,7 +163,13 @@ func aStarCancerous(rootNode *Node) *Node {
 	// Add children of root node to priority queue
 	priorityQueue = rootNode.children
 
+	flag:
 	for len(priorityQueue) > 0 {
+
+		// Check if user cancelled
+		if stopSolver {
+			return currentNode
+		}
 
 		// Sort priorityQueue
 		sortByDistanceFromCancerous(priorityQueue)
@@ -170,7 +185,14 @@ func aStarCancerous(rootNode *Node) *Node {
 			currentNode = priorityQueue[0]
 		}
 
-		printBoard(currentNode.board)
+		for _, processedNode := range processedNodes{
+			if processedNode.currentPosition == currentNode.currentPosition {
+				priorityQueue = priorityQueue.removeNodeFromPriorityQueue(currentNode)
+				continue flag
+			}
+		}
+
+		//printBoard(currentNode.board)
 
 		// Update current board in browser
 		fillGridFromBoard(currentNode.board)

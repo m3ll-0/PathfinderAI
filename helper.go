@@ -22,11 +22,21 @@ func getCoordinateFromBoardMark(board Board, mark string) Coordinate{
 }
 
 func loadNextBoard() {
+	boards := getBoards()
+
+	if currentBoardCounter >= len(boards) - 1 {
+		alertMessage("Error: No boards left.")
+		return
+	}
+
 	currentBoardCounter++
 
-	boards := getBoards()
 	board := boards[currentBoardCounter]
 	generateGridFromBoard(board)
 	fillGridFromBoard(board)
 	resetStatistics()
+}
+
+func stopSolvers(){
+	stopSolver = true
 }

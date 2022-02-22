@@ -13,13 +13,14 @@ var ui, err = lorca.New("", "", 1000, 1000)
 var currentBoardCounter = -1
 var timeStart = time.Now()
 var nodesVisitedCounter = 0
+var stopSolver = false
 
 func main() {
 	setupLorca()
 }
 
 func doPathFinding(solverMethodString string){
-
+	stopSolver = false
 	boards := getBoards()
 	board := boards[currentBoardCounter]
 	currentPlayerPosition := getCoordinateFromBoardMark(board, "p")

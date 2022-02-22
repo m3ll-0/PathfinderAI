@@ -4,6 +4,10 @@ import (
 	"fmt"
 )
 
+func alertMessage(message string){
+	ui.Eval(fmt.Sprintf("alert('%v');", message))
+}
+
 func resetStatistics(){
 	ui.Eval(fmt.Sprintf("setStatistics('%v', '%v');", "?", "?"))
 }
@@ -31,11 +35,11 @@ func fillGridFromBoard(board Board){
 			} else if column == "*" {
 				ui.Eval(fmt.Sprintf("setCellBGColor(%v,%v,'%v');", rowCounter, columnCounter, "red"))
 			} else if column == "p" {
-				ui.Eval(fmt.Sprintf("setCellBGColor(%v,%v,'%v');", rowCounter, columnCounter, "green"))
+				ui.Eval(fmt.Sprintf("setCellBGColor(%v,%v,'%v', true);", rowCounter, columnCounter, "#07418a"))
 			}  else if column == "e" {
-				ui.Eval(fmt.Sprintf("setCellBGColor(%v,%v,'%v');", rowCounter, columnCounter, "black"))
+				ui.Eval(fmt.Sprintf("setCellBGColor(%v,%v,'%v', true);", rowCounter, columnCounter, "green"))
 			} else if column == "o" {
-				ui.Eval(fmt.Sprintf("setCellBGColor(%v,%v,'%v');", rowCounter, columnCounter, "lightgreen"))
+				ui.Eval(fmt.Sprintf("setCellBGColor(%v,%v,'%v');", rowCounter, columnCounter, "#2383d6"))
 			}
 
 		}

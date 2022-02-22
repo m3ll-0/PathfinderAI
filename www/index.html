@@ -9,20 +9,20 @@
         .counter-container { transition: opacity 0.5s ease; opacity: 0.09; position: fixed; top: 0; display: flex; flex-direction: column; align-items: center; }
         .counter-container:hover { opacity: 1;
         }
-        .ai-table-container { display: flex; flex-direction: column; align-items: center; }
+        .ai-table-container { display: flex; flex-direction: column; align-items: center; background-color: #191919; }
         .counter { color: #fff; font-weight: bold; font-size: 0.9rem; border: 1px solid #bbbb4a; padding: 2px; width: 100%; }
         .btn-row { display: flex; align-items: center; margin: 1rem; }
         .btn { cursor: pointer; min-width: 4em; padding: 1em; border-radius: 5px; text-align: center; margin: 0 1rem; box-shadow: 0 6px #8b5e00; color: white; background-color: #E4B702; position: relative; font-weight: bold; }
         .btn:hover { box-shadow: 0 4px #8b5e00; top: 2px; }
         .btn:active{ box-shadow: 0 1px #8b5e00; top: 5px; }
-        .btn-start:active{ box-shadow: 0 1px #158b00;}
-        .btn-start:hover {box-shadow: 0 4px #008b4b;}
-        .btn-start{
-            box-shadow: 0 6px #008b2b;
-            background-color: #02e43d;
-        }
+        .btn-load-next-board:active{ box-shadow: 0 1px #158b00;}
+        .btn-load-next-board:hover {box-shadow: 0 4px #008b4b;}
+        .btn-load-next-board{ box-shadow: 0 6px #008b2b; background-color: #02e43d;}
+        .btn-stop-solvers:active{ box-shadow: 0 1px #8b0000;}
+        .btn-stop-solvers:hover {box-shadow: 0 4px #8b0000;}
+        .btn-stop-solvers{ box-shadow: 0 6px #8b0000; background-color: #e40202;}
 
-        .ai-cell{min-height: 19px; min-width: 19px;  display: inline-block; margin: 2px; padding: 1px;
+        .ai-cell{min-height: 19px; min-width: 19px;  display: inline-block; margin: 2px; padding: 1px;;
         }
 
         .ai-row{margin-top: -10px;
@@ -40,6 +40,7 @@
         <div class="btn btn-solver-DFS">Run DFS</div>
         <div class="btn btn-solver-aStar-cancerous">Run A* (Cancerous)</div>
         <div class="btn btn-load-next-board">Load next level</div>
+        <div class="btn btn-stop-solvers">Stop solvers</div>
     </div>
     <div class="counter" id="statistics">
         Amount of nodes visited: ?
@@ -53,10 +54,11 @@
 <!-- Connect UI actions to Go functions -->
 <script>
     const counter = document.querySelector('.counter');
-    const btnLoadNextBoard = document.querySelector('.btn-load-next-board');
     const btnSolverDFS = document.querySelector('.btn-solver-DFS')
     const btnSolverAStar = document.querySelector('.btn-solver-aStar');
     const btnSolverAStarCancerous = document.querySelector('.btn-solver-aStar-cancerous');
+    const btnLoadNextBoard = document.querySelector('.btn-load-next-board');
+    const btnStopSolvers = document.querySelector('.btn-stop-solvers');
 
     // We use async/await because Go functions are asynchronous
     const render = async () => {
@@ -77,6 +79,10 @@
 
     btnSolverAStarCancerous.addEventListener('click', async () => {
         await doPathFinding("aStarCancerous"); // Call Go function
+    });
+
+    btnStopSolvers.addEventListener('click', async () => {
+        await stopSolvers(); // Call Go function
     });
 
     function setStatistics(amountOfNodesVisited, totalAmountOfTime){
@@ -111,10 +117,20 @@
         AITableContainer.appendChild(table)
     }
 
-    function setCellBGColor(row, col, bgcolor){
+        function setCellBGColor(row, col, bgcolor, makeRounded = false){
         var cellID = 'r'+row+"|"+'c'+col
         var cell = document.getElementById(cellID);
         cell.setAttribute("style", "background-color: "+bgcolor + ";")
+
+        if(makeRounded){
+            document.getElementById(cellID).style.borderRadius = '10px'
+        }
+
+    }
+
+    window.onload = function getInitialBoard(){
+        document.querySelector('.btn-load-next-board').click();
+
     }
 
 </script>
