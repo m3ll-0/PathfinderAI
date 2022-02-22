@@ -1,0 +1,123 @@
+<!doctype html>
+<html>
+<head>
+    <title>Pathfinder AI</title>
+    <link rel="shortcut icon" href="favicon.png">
+    <style>
+        * { margin: 0; padding: 0; user-select: none; }
+        body { height: 100vh; display: flex; align-items: center; justify-content: center; background-color: #353535; font-family: 'Helvetika Neue', Arial, sans-serif; font-size: 18px; }
+        .counter-container { position: fixed; top: 0; display: flex; flex-direction: column; align-items: center; }
+        .ai-table-container { display: flex; flex-direction: column; align-items: center; }
+        .counter { color: #fff; font-weight: bold; font-size: 0.9rem; border: 1px solid #bbbb4a; padding: 2px; width: 100%; }
+        .btn-row { display: flex; align-items: center; margin: 1rem; }
+        .btn { cursor: pointer; min-width: 4em; padding: 1em; border-radius: 5px; text-align: center; margin: 0 1rem; box-shadow: 0 6px #8b5e00; color: white; background-color: #E4B702; position: relative; font-weight: bold; }
+        .btn:hover { box-shadow: 0 4px #8b5e00; top: 2px; }
+        .btn:active{ box-shadow: 0 1px #8b5e00; top: 5px; }
+        .btn-start:active{ box-shadow: 0 1px #158b00;}
+        .btn-start:hover {box-shadow: 0 4px #008b4b;}
+        .btn-start{
+            box-shadow: 0 6px #008b2b;
+            background-color: #02e43d;
+        }
+
+        .ai-cell{min-height: 30px; min-width: 30px;  display: inline-block; margin-top: -5px; padding: 1px;
+        }
+
+        .ai-cell{min-height: 30px; min-width: 30px;  display: inline-block; margin: 2px; padding: 1px;
+        }
+
+        .ai-row{margin-top: -10px;
+        }
+        .ai-table{empty-cells:show;    border-collapse: collapse;
+            border-spacing: 0; display: block; box-shadow: 0px 0px 5px 5px #8b5e00}
+
+    </style>
+</head>
+<body onload=start()>
+<!-- UI layout -->
+<div class="counter-container">
+    <div class="btn-row">
+        <div class="btn btn-solver-aStar">Run A*</div>
+        <div class="btn btn-solver-DFS">Run DFS</div>
+        <div class="btn btn-solver-aStar-cancerous">Run A* (Cancerous)</div>
+        <div class="btn btn-load-next-board">Load next level</div>
+    </div>
+    <div class="counter" id="statistics">
+        Amount of nodes visited: ?
+        <br>
+        Total amount of time: ?
+    </div>
+</div>
+<div class="ai-table-container" id="ai-table-container">
+</div>
+
+<!-- Connect UI actions to Go functions -->
+<script>
+    const counter = document.querySelector('.counter');
+    const btnLoadNextBoard = document.querySelector('.btn-load-next-board');
+    const btnSolverDFS = document.querySelector('.btn-solver-DFS')
+    const btnSolverAStar = document.querySelector('.btn-solver-aStar');
+    const btnSolverAStarCancerous = document.querySelector('.btn-solver-aStar-cancerous');
+
+    // We use async/await because Go functions are asynchronous
+    const render = async () => {
+        counter.innerText = `Count: ${await window.counterValue()}`;
+    };
+
+    btnLoadNextBoard.addEventListener('click', async () => {
+        await loadNextBoard(); // Call Go function
+    });
+
+    btnSolverDFS.addEventListener('click', async () => {
+        await doPathFinding("DFS"); // Call Go function
+    });
+
+    btnSolverAStar.addEventListener('click', async () => {
+        await doPathFinding("aStar"); // Call Go function
+    });
+
+    btnSolverAStarCancerous.addEventListener('click', async () => {
+        await doPathFinding("aStarCancerous"); // Call Go function
+    });
+
+    function setStatistics(amountOfNodesVisited, totalAmountOfTime){
+        var statistics = document.getElementById("statistics")
+        statistics.innerText = "Amount of nodes visited: " + amountOfNodesVisited + "\n" + "Total amount of time: " + totalAmountOfTime
+    }
+
+    function generateGrid(rows, cols){
+        var table = document.createElement('table');
+        table.classList.add('ai-table');
+
+        for (var i = 0; i < rows; i++){
+            var tr = document.createElement('tr');
+            tr.classList.add('ai-row');
+
+            for (var j = 0; j < cols; j++) {
+                var td1 = document.createElement('td');
+                td1.classList.add('ai-cell');
+                var text1 = document.createTextNode('');
+
+                td1.id = "r"+i+"|"+"c"+j
+
+                td1.appendChild(text1);
+                tr.appendChild(td1);
+            }
+
+            table.appendChild(tr);
+        }
+
+        var AITableContainer = document.getElementById('ai-table-container')
+        AITableContainer.innerHTML = ""
+        AITableContainer.appendChild(table)
+    }
+
+    function setCellBGColor(row, col, bgcolor){
+        var cellID = 'r'+row+"|"+'c'+col
+        var cell = document.getElementById(cellID);
+        cell.setAttribute("style", "background-color: "+bgcolor + ";")
+    }
+
+</script>
+</body>
+</html>
