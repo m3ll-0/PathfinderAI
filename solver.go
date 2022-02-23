@@ -181,6 +181,7 @@ func aStarCancerous(rootNode *Node) *Node {
 	var priorityQueue PriorityQueue
 	var currentNode *Node
 	var processedNodes []*Node
+	coordinateHeatMap = make(map[Coordinate]int)
 
 	// Generate all children of root node, and add children to priority queue
 	rootNode.generateChildren()
@@ -195,9 +196,6 @@ func aStarCancerous(rootNode *Node) *Node {
 		if stopSolver {
 			return currentNode
 		}
-
-		// Sort priorityQueue
-		sortByDistanceFromCancerous(priorityQueue)
 
 		// Generate random number between 1 and 10 such that 10% of the time it will pick a random node
 		rand.Seed(time.Now().UnixNano())
@@ -220,12 +218,22 @@ func aStarCancerous(rootNode *Node) *Node {
 		//printBoard(currentNode.board)
 
 		// Update current board in browser
-		fillGridFromBoard(currentNode.board)
+		if speedMode {
+			updateBoard(currentNode.currentPosition, currentNode.parent.currentPosition)
+		} else {
+			fillGridFromBoard(currentNode.board)
+		}
 
 		// Check if current node is goal
 		if currentNode.currentPosition == currentNode.goalPosition {
+			if speedMode{
+				fillGridFromBoard(currentNode.board)
+			}
 			return currentNode
 		}
+
+		// Update coordinateHeatmap
+		updateCoordinateHeatMap(coordinateHeatMap, currentNode)
 
 		// Generate children
 		currentNode.generateChildren()
@@ -238,20 +246,9 @@ func aStarCancerous(rootNode *Node) *Node {
 
 		priorityQueue = priorityQueue.removeNodeFromPriorityQueue(currentNode)
 		processedNodes = append(processedNodes, currentNode)
+
 	}
 
 	return &Node{}
 }
 
-func sortByDistanceFromCancerous(nodes []*Node) {
-	sort.Slice(nodes, func(i, j int) bool {
-		dix := float64(nodes[i].goalPosition.column - nodes[i].currentPosition.column)
-		diy := float64(nodes[i].goalPosition.row - nodes[i].currentPosition.row)
-		di :=  math.Sqrt(math.Pow(dix, 2) + math.Pow(diy, 2))
-
-		djx := float64(nodes[j].goalPosition.column - nodes[j].currentPosition.column)
-		djy := float64(nodes[j].goalPosition.row - nodes[j].currentPosition.row)
-		dj :=  math.Sqrt(math.Pow(djx, 2) + math.Pow(djy, 2))
-		return dj < di
-	})
-}

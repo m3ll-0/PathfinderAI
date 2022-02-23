@@ -59,8 +59,8 @@ func stopSolvers(){
 func generateRandomLevel(){
 
 	rand.Seed(time.Now().UnixNano())
-	randAmountOfRows := rand.Intn(30 - 5 + 1) + 5
-	randAmountOfColumns := rand.Intn(70 - 5 + 1) + 5
+	randAmountOfRows := rand.Intn(80 - 5 + 1) + 5
+	randAmountOfColumns := rand.Intn(210 - 5 + 1) + 5
 
 	var board Board
 
