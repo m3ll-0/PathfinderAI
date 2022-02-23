@@ -23,6 +23,7 @@ func main() {
 }
 
 func doPathFinding(solverMethodString string){
+
 	stopSolver = false
 	board := boardList[currentBoardCounter]
 	currentPlayerPosition := getCoordinateFromBoardMark(board, "p")
