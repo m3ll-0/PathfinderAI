@@ -29,7 +29,6 @@ func DFS(node *Node) *Node {
 
 	// Return node if goal is reached
 	if node.currentPosition == node.goalPosition {
-		fillBoardMethod(node.board)
 		return node
 	}
 
@@ -124,9 +123,6 @@ func aStar(rootNode *Node) *Node {
 
 		// Check if current node is goal
 		if currentNode.currentPosition == currentNode.goalPosition {
-			if speedMode{
-				fillBoardMethod(currentNode.board)
-			}
 			return currentNode
 		}
 
@@ -226,9 +222,6 @@ func aStarCancerous(rootNode *Node) *Node {
 
 		// Check if current node is goal
 		if currentNode.currentPosition == currentNode.goalPosition {
-			if speedMode{
-				fillBoardMethod(currentNode.board)
-			}
 			return currentNode
 		}
 

@@ -69,6 +69,7 @@ func doPathFinding(solverMethodString string){
 	nodesVisitedCounter = 0
 
 	solvedNode := solverMethod(rootNode)
+	fillBoardMethod(solvedNode.board)
 
 	setStatistics(nodesVisitedCounter, fmt.Sprint(time.Since(timeStart)), solvedNode.level)
 
