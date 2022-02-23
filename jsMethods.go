@@ -49,10 +49,7 @@ func updateCanvas(prevPlayerCoordinate Coordinate, curPlayerCoordinate Coordinat
 func fillTableFromBoard(board Board){
 	for rowCounter, row := range board{
 		for columnCounter, column := range row {
-
-			if column == "#"{
-				ui.Eval(fmt.Sprintf("setCellBGColor(%v,%v,'%v');", rowCounter, columnCounter, "#5a5757"))
-			} else if column == "*" {
+			if column == "*" {
 				ui.Eval(fmt.Sprintf("setCellBGColor(%v,%v,'%v');", rowCounter, columnCounter, "red"))
 			} else if column == "p" {
 				ui.Eval(fmt.Sprintf("setCellBGColor(%v,%v,'%v', true);", rowCounter, columnCounter, "#07418a"))
