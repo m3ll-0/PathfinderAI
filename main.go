@@ -17,8 +17,22 @@ var nodesVisitedCounter = 0
 var stopSolver = false
 var boardList = []Board{}
 var speedMode = true
+var canvasMode = false
+var currentBoard Board
+
+var updateBoardMethod UpdateBoardMethod
+var generateBoardMethod GenerateBoardMethod
+var fillBoardMethod FillBoardMethod
 
 func main() {
+	updateBoardMethod = updateTable
+	generateBoardMethod = generateTableFromBoard
+	fillBoardMethod = fillTableFromBoard
+
+	//updateBoardMethod = updateCanvas
+	//generateBoardMethod = generateCanvasFromBoard
+	//fillBoardMethod = fillCanvasFromBoard
+
 	setupLorca()
 }
 
@@ -50,8 +64,7 @@ func doPathFinding(solverMethodString string){
 		break
 	}
 
-	// Reset statistics
-	resetStatistics()
+	resetStatistics() // Reset statistics for visual purposes
 	timeStart = time.Now()
 	nodesVisitedCounter = 0
 

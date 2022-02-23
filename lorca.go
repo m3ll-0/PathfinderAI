@@ -42,6 +42,7 @@ func setupLorca(){
 	ui.Bind("stopSolvers", stopSolvers)
 	ui.Bind("randomBoard", generateRandomLevel)
 	ui.Bind("toggleSpeedMode", toggleSpeedMode)
+	ui.Bind("toggleCanvasMode", toggleCanvasMode)
 
 	ln, err := net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {

@@ -7,8 +7,7 @@
         * { margin: 0; padding: 0; user-select: none; }
         body { height: 100vh; display: flex; align-items: center; justify-content: center; background-color: #353535; font-family: 'Helvetika Neue', Arial, sans-serif; font-size: 18px; }
         .counter-container { transition: opacity 0.5s ease; opacity: 0.09; position: fixed; top: 0; display: flex; flex-direction: column; align-items: center; }
-        .counter-container:hover { opacity: 1;
-        }
+        .counter-container:hover { opacity: 1;}
         .ai-table-container { display: flex; flex-direction: column; align-items: center; background-color: #191919; }
         .counter { color: #fff; font-weight: bold; font-size: 0.9rem; border: 1px solid #bbbb4a; padding: 2px; width: 100%; }
         .btn-row { display: flex; align-items: center; margin: 1rem; }
@@ -113,6 +112,14 @@
             <br>
         <label style="color: white; font-size: 14px">Speed mode</label>
         </div>
+        <div>
+            <label class="switch">
+                <input type="checkbox" class="switch-canvas-mode">
+                <span class="slider round"></span>
+            </label>
+            <br>
+            <label style="color: white; font-size: 14px">Canvas mode</label>
+        </div>
         <div class="btn btn-solver-aStar">Run A*</div>
         <div class="btn btn-solver-DFS">Run DFS</div>
         <div class="btn btn-solver-aStar-cancerous">Run BFS</div>
@@ -139,6 +146,7 @@
     const btnStopSolvers = document.querySelector('.btn-stop-solvers');
     const btnRandomBoard = document.querySelector('.btn-random-board');
     const switchSpeedMode = document.querySelector('.switch-speed-mode');
+    const switchCanvasMode = document.querySelector('.switch-canvas-mode');
 
     // We use async/await because Go functions are asynchronous
     const render = async () => {
@@ -171,6 +179,10 @@
 
     switchSpeedMode.addEventListener('click', async () => {
         await toggleSpeedMode(); // Call Go function
+    });
+
+    switchCanvasMode.addEventListener('click', async () => {
+        await toggleCanvasMode(); // Call Go function
     });
 
     function setStatistics(amountOfNodesVisited, totalAmountOfTime, totalPathLength){
@@ -218,6 +230,108 @@
     window.onload = function getInitialBoard(){
         document.querySelector('.btn-load-next-board').click();
     }
+
+
+
+
+    //  ****************************************************************** CANVAS //  ****************************************************************** CANVAS
+
+    var totalRows = 0
+    var totalCols = 0
+
+    function updateCanvasCell(rowIndex, colIndex, bgColor){
+
+        var canvas = document.getElementById("canvas");
+        var context = canvas.getContext("2d");
+        context.fillStyle = bgColor;
+
+        var xPos = (DEFAULT_OPTIONS.width / totalCols) * colIndex  // + col * DEFAULT_OPTIONS.weight
+        var yPos = (DEFAULT_OPTIONS.height / totalRows) * rowIndex
+        var xSize = DEFAULT_OPTIONS.width / totalCols // -  2 * DEFAULT_OPTIONS.weight
+        var ySize = DEFAULT_OPTIONS.height / totalRows // - 2 * DEFAULT_OPTIONS.weight
+
+        context.fillRect(xPos, yPos, xSize, ySize);
+    }
+
+    const DEFAULT_OPTIONS = {
+
+        width      : 500,
+        height     : 500,
+        weight     : 0,
+        background : null,
+        color      : '#000000'
+    };
+
+    function generateCanvas(_totalRows, _totalCols){
+
+        totalRows = _totalRows
+        totalCols = _totalCols
+
+        const main = () => {
+            addGrid({
+                background : '#183',
+                color      : '#999',
+                cols: totalRows,
+                rows: totalCols
+            });
+        }
+
+        const addGrid = (options) => {
+            var canvas = createCanvasGrid(options)
+            canvas.id = "canvas"
+
+            var AITableContainer = document.getElementById('ai-table-container')
+            AITableContainer.innerHTML = ""
+            AITableContainer.appendChild(canvas)
+
+        };
+
+        const createCanvasGrid = (options) => {
+            let opts = Object.assign({}, DEFAULT_OPTIONS, options);
+            let canvas = document.createElement("CANVAS");
+            let ctx = canvas.getContext("2d");
+
+            canvas.width = opts.width;
+            canvas.height = opts.height;
+
+            let weight2 = opts.weight * 2;
+            let weightHalf = opts.weight / 2;
+
+            let availWidth =  opts.width - opts.weight;
+            let availHeight = opts.height - opts.weight;
+
+            let cellWidth = availWidth / opts.cols;
+            let cellHeight = availHeight / opts.rows;
+
+            if (options.background) {
+                ctx.fillStyle = opts.background;
+                ctx.fillRect(0, 0, opts.width, opts.height);
+            }
+
+            ctx.beginPath();
+            ctx.strokeStyle = opts.color;
+            ctx.lineWidth = opts.weight;
+
+            for (let col = 0; col <= opts.cols; col++) {
+                let newX = Math.floor(col * cellWidth) + weightHalf;
+                ctx.moveTo(newX, 0);
+                ctx.lineTo(newX, opts.height);
+            }
+
+            for (let row = 0; row <= opts.rows; row++) {
+                let newY = (row * cellHeight) + weightHalf;
+                ctx.moveTo(0, newY);
+                ctx.lineTo(opts.width, newY);
+            }
+
+            ctx.stroke();
+
+            return canvas;
+        };
+
+        main();
+    }
+
 
 </script>
 </body>

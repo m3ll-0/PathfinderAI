@@ -47,8 +47,10 @@ func loadNextBoard() {
 	currentBoardCounter++
 
 	board := boardList[currentBoardCounter]
-	generateGridFromBoard(board)
-	fillGridFromBoard(board)
+	generateBoardMethod(board)
+
+	currentBoard = board // Set current board, so you can switch between canvas mode and table mode intermittently
+	fillBoardMethod(board)
 	resetStatistics()
 }
 
@@ -108,3 +110,25 @@ func toggleSpeedMode(){
 	speedMode = !speedMode
 }
 
+func toggleCanvasMode(){
+
+	canvasMode = !canvasMode
+
+	// Reset listeners
+	if canvasMode {
+		updateBoardMethod = updateCanvas
+		generateBoardMethod = generateCanvasFromBoard
+		fillBoardMethod = fillCanvasFromBoard
+	} else {
+		updateBoardMethod = updateTable
+		generateBoardMethod = generateTableFromBoard
+		fillBoardMethod = fillTableFromBoard
+	}
+
+	// Reload current board
+	generateBoardMethod(currentBoard)
+	fillBoardMethod(currentBoard)
+
+
+
+}

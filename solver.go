@@ -21,15 +21,15 @@ func DFS(node *Node) *Node {
 	// Update current board in browser
 	if node.parent != nil {
 		if speedMode {
-			updateBoard(node.currentPosition, node.parent.currentPosition)
+			updateBoardMethod(node.currentPosition, node.parent.currentPosition)
 		} else {
-			fillGridFromBoard(node.board)
+			fillBoardMethod(node.board)
 		}
 	}
 
 	// Return node if goal is reached
 	if node.currentPosition == node.goalPosition {
-		fillGridFromBoard(node.board)
+		fillBoardMethod(node.board)
 		return node
 	}
 
@@ -117,15 +117,15 @@ func aStar(rootNode *Node) *Node {
 
 		// Update current board in browser
 		if speedMode {
-			updateBoard(currentNode.currentPosition, currentNode.parent.currentPosition)
+			updateBoardMethod(currentNode.currentPosition, currentNode.parent.currentPosition)
 		} else {
-			fillGridFromBoard(currentNode.board)
+			fillBoardMethod(currentNode.board)
 		}
 
 		// Check if current node is goal
 		if currentNode.currentPosition == currentNode.goalPosition {
 			if speedMode{
-				fillGridFromBoard(currentNode.board)
+				fillBoardMethod(currentNode.board)
 			}
 			return currentNode
 		}
@@ -219,15 +219,15 @@ func aStarCancerous(rootNode *Node) *Node {
 
 		// Update current board in browser
 		if speedMode {
-			updateBoard(currentNode.currentPosition, currentNode.parent.currentPosition)
+			updateBoardMethod(currentNode.currentPosition, currentNode.parent.currentPosition)
 		} else {
-			fillGridFromBoard(currentNode.board)
+			fillBoardMethod(currentNode.board)
 		}
 
 		// Check if current node is goal
 		if currentNode.currentPosition == currentNode.goalPosition {
 			if speedMode{
-				fillGridFromBoard(currentNode.board)
+				fillBoardMethod(currentNode.board)
 			}
 			return currentNode
 		}
