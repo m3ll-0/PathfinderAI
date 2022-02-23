@@ -1,12 +1,13 @@
 package main
 
 import (
-	"fmt"
 	"math"
 	"math/rand"
 	"sort"
 	"time"
 )
+
+var coordinatesVisited []Coordinate
 
 func DFS(node *Node) *Node {
 
@@ -15,33 +16,51 @@ func DFS(node *Node) *Node {
 		return node
 	}
 
-	//printBoard(node.board)
 	nodesVisitedCounter++
 
 	// Update current board in browser
-	fillGridFromBoard(node.board)
+	if node.parent != nil {
+		if speedMode {
+			updateBoard(node.currentPosition, node.parent.currentPosition)
+		} else {
+			fillGridFromBoard(node.board)
+		}
+	}
 
 	// Return node if goal is reached
 	if node.currentPosition == node.goalPosition {
-		setStatistics(nodesVisitedCounter, fmt.Sprint(time.Since(timeStart)))
+		fillGridFromBoard(node.board)
 		return node
 	}
 
-	node.generateChildren()
-
 	var result *Node
 
-	// For every child, call dfs
-	for _, cn := range node.children{
-		result = DFS(cn)
+	skip := false
 
-		// When node is being return from head, result is set. Result first has to be checked whether it is nul, then check goal
-		//and return node so that node can be returned from recursive function
-		if result != nil {
-			// Return node if goal is reached
-			if result.currentPosition == result.goalPosition {
-				setStatistics(nodesVisitedCounter, fmt.Sprint(time.Since(timeStart)))
-				break
+	// Check if coordinate has already been visited
+	for _, visitedCoordinate := range coordinatesVisited {
+		if visitedCoordinate == node.currentPosition {
+			skip = true
+		}
+	}
+
+	if !skip {
+
+		coordinatesVisited = append(coordinatesVisited, node.currentPosition)
+
+		node.generateChildren()
+
+		// For every child, call dfs
+		for _, cn := range node.children{
+			result = DFS(cn)
+
+			// When node is being return from head, result is set. Result first has to be checked whether it is nul, then check goal
+			//and return node so that node can be returned from recursive function
+			if result != nil {
+				// Return node if goal is reached
+				if result.currentPosition == result.goalPosition {
+					break
+				}
 			}
 		}
 	}
@@ -97,11 +116,17 @@ func aStar(rootNode *Node) *Node {
 		//printBoard(currentNode.board)
 
 		// Update current board in browser
-		fillGridFromBoard(currentNode.board)
+		if speedMode {
+			updateBoard(currentNode.currentPosition, currentNode.parent.currentPosition)
+		} else {
+			fillGridFromBoard(currentNode.board)
+		}
 
 		// Check if current node is goal
 		if currentNode.currentPosition == currentNode.goalPosition {
-			setStatistics(nodesVisitedCounter, fmt.Sprint(time.Since(timeStart)))
+			if speedMode{
+				fillGridFromBoard(currentNode.board)
+			}
 			return currentNode
 		}
 
@@ -199,7 +224,6 @@ func aStarCancerous(rootNode *Node) *Node {
 
 		// Check if current node is goal
 		if currentNode.currentPosition == currentNode.goalPosition {
-			setStatistics(nodesVisitedCounter, fmt.Sprint(time.Since(timeStart)))
 			return currentNode
 		}
 

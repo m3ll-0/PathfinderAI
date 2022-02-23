@@ -21,14 +21,83 @@
         .btn-stop-solvers:active{ box-shadow: 0 1px #8b0000;}
         .btn-stop-solvers:hover {box-shadow: 0 4px #8b0000;}
         .btn-stop-solvers{ box-shadow: 0 6px #8b0000; background-color: #e40202;}
+        .btn-random-board:active{ box-shadow: 0 1px #8b0000;}
+        .btn-random-board:hover {box-shadow: 0 4px #8b0000;}
+        .btn-random-board{ box-shadow: 0 6px #8b0000; background-color: #e40202;}
 
         .ai-cell{min-height: 19px; min-width: 19px;  display: inline-block; margin: 2px; padding: 1px;;
+            white-space: nowrap;
         }
 
         .ai-row{margin-top: -10px;
         }
         .ai-table{empty-cells:show;    border-collapse: collapse;
-            border-spacing: 0; display: block; box-shadow: 0px 0px 5px 5px #8b5e00}
+            border-spacing: 0; display: block; box-shadow: 0px 0px 5px 5px #8b5e00;
+            width: 100%
+        }
+
+        /* The switch - the box around the slider */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        /* Hide default HTML checkbox */
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        /* The slider */
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked + .slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
 
     </style>
 </head>
@@ -36,10 +105,19 @@
 <!-- UI layout -->
 <div class="counter-container">
     <div class="btn-row">
+        <div>
+        <label class="switch">
+            <input type="checkbox" checked class="switch-speed-mode">
+            <span class="slider round"></span>
+        </label>
+            <br>
+        <label style="color: white; font-size: 14px">Speed mode</label>
+        </div>
         <div class="btn btn-solver-aStar">Run A*</div>
         <div class="btn btn-solver-DFS">Run DFS</div>
         <div class="btn btn-solver-aStar-cancerous">Run A* (Cancerous)</div>
         <div class="btn btn-load-next-board">Load next level</div>
+        <div class="btn btn-random-board">Random level</div>
         <div class="btn btn-stop-solvers">Stop solvers</div>
     </div>
     <div class="counter" id="statistics">
@@ -59,6 +137,8 @@
     const btnSolverAStarCancerous = document.querySelector('.btn-solver-aStar-cancerous');
     const btnLoadNextBoard = document.querySelector('.btn-load-next-board');
     const btnStopSolvers = document.querySelector('.btn-stop-solvers');
+    const btnRandomBoard = document.querySelector('.btn-random-board');
+    const switchSpeedMode = document.querySelector('.switch-speed-mode');
 
     // We use async/await because Go functions are asynchronous
     const render = async () => {
@@ -85,9 +165,17 @@
         await stopSolvers(); // Call Go function
     });
 
-    function setStatistics(amountOfNodesVisited, totalAmountOfTime){
+    btnRandomBoard.addEventListener('click', async () => {
+        await randomBoard(); // Call Go function
+    });
+
+    switchSpeedMode.addEventListener('click', async () => {
+        await toggleSpeedMode(); // Call Go function
+    });
+
+    function setStatistics(amountOfNodesVisited, totalAmountOfTime, totalPathLength){
         var statistics = document.getElementById("statistics")
-        statistics.innerText = "Amount of nodes visited: " + amountOfNodesVisited + "\n" + "Total amount of time: " + totalAmountOfTime
+        statistics.innerText = "Total amount of nodes visited: " + amountOfNodesVisited + " | " + "Total path length: " + totalPathLength + "\n" + "Total amount of time: " + totalAmountOfTime
     }
 
     function generateGrid(rows, cols){
@@ -117,7 +205,7 @@
         AITableContainer.appendChild(table)
     }
 
-        function setCellBGColor(row, col, bgcolor, makeRounded = false){
+    function setCellBGColor(row, col, bgcolor, makeRounded = false){
         var cellID = 'r'+row+"|"+'c'+col
         var cell = document.getElementById(cellID);
         cell.setAttribute("style", "background-color: "+bgcolor + ";")
@@ -125,12 +213,10 @@
         if(makeRounded){
             document.getElementById(cellID).style.borderRadius = '10px'
         }
-
     }
 
     window.onload = function getInitialBoard(){
         document.querySelector('.btn-load-next-board').click();
-
     }
 
 </script>

@@ -2,6 +2,7 @@ package main
 
 import (
 	"embed"
+	"fmt"
 	"github.com/zserge/lorca"
 	"os"
 	"time"
@@ -14,6 +15,8 @@ var currentBoardCounter = -1
 var timeStart = time.Now()
 var nodesVisitedCounter = 0
 var stopSolver = false
+var boardList = []Board{}
+var speedMode = true
 
 func main() {
 	setupLorca()
@@ -21,8 +24,7 @@ func main() {
 
 func doPathFinding(solverMethodString string){
 	stopSolver = false
-	boards := getBoards()
-	board := boards[currentBoardCounter]
+	board := boardList[currentBoardCounter]
 	currentPlayerPosition := getCoordinateFromBoardMark(board, "p")
 	currentGoalPosition := getCoordinateFromBoardMark(board, "e")
 
@@ -52,7 +54,11 @@ func doPathFinding(solverMethodString string){
 	timeStart = time.Now()
 	nodesVisitedCounter = 0
 
-	solverMethod(rootNode)
+	solvedNode := solverMethod(rootNode)
+
+	setStatistics(nodesVisitedCounter, fmt.Sprint(time.Since(timeStart)), solvedNode.level)
+
+	coordinatesVisited = []Coordinate{} // todo: ugly hack to pass variable function, needed for DFS
 }
 
 

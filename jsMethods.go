@@ -9,11 +9,11 @@ func alertMessage(message string){
 }
 
 func resetStatistics(){
-	ui.Eval(fmt.Sprintf("setStatistics('%v', '%v');", "?", "?"))
+	ui.Eval(fmt.Sprintf("setStatistics('%v', '%v', '%v');", "?", "?", "?"))
 }
 
-func setStatistics(amountOfNodesVisited int, totalAmountOfTime string){
-	ui.Eval(fmt.Sprintf("setStatistics('%v', '%v');", amountOfNodesVisited, totalAmountOfTime))
+func setStatistics(totalAmountOfNodesVisited int, totalAmountOfTime string, totalPathLength int){
+	ui.Eval(fmt.Sprintf("setStatistics('%v', '%v', '%v');", totalAmountOfNodesVisited, totalAmountOfTime, totalPathLength))
 }
 
 func generateGridFromBoard(board Board){
@@ -24,6 +24,12 @@ func generateGridFromBoard(board Board){
 
 	// First generate grid and assign cell values coordinates
 	ui.Eval(fmt.Sprintf("generateGrid(%v,%v);", rowDimension, columnDimension))
+}
+
+func updateBoard(prevPlayerCoordinate Coordinate, curPlayerCoordinate Coordinate){
+	ui.Eval(fmt.Sprintf("setCellBGColor(%v,%v,'%v', true);", prevPlayerCoordinate.row, prevPlayerCoordinate.column, "#2383d6"))
+	ui.Eval(fmt.Sprintf("setCellBGColor(%v,%v,'%v', true);", curPlayerCoordinate.row, curPlayerCoordinate.column, "#07418a"))
+
 }
 
 func fillGridFromBoard(board Board){
@@ -39,7 +45,7 @@ func fillGridFromBoard(board Board){
 			}  else if column == "e" {
 				ui.Eval(fmt.Sprintf("setCellBGColor(%v,%v,'%v', true);", rowCounter, columnCounter, "green"))
 			} else if column == "o" {
-				ui.Eval(fmt.Sprintf("setCellBGColor(%v,%v,'%v');", rowCounter, columnCounter, "#2383d6"))
+				ui.Eval(fmt.Sprintf("setCellBGColor(%v,%v,'%v', true);", rowCounter, columnCounter, "#2383d6"))
 			}
 
 		}

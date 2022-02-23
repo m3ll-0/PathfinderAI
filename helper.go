@@ -1,12 +1,29 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"math/rand"
+	"time"
+)
 
 func printBoard(board Board){
 	println("")
 	for _, row := range board {
 		println(fmt.Sprint(row))
 	}
+}
+
+func printBoardCopy(board Board){
+	println("\n")
+	print("Board{\n")
+	for _, row := range board {
+		print("{")
+		for _, column := range row {
+			print("\""+ column +"\", ")
+		}
+		print("},\n")
+	}
+	print("}")
 }
 
 func getCoordinateFromBoardMark(board Board, mark string) Coordinate{
@@ -22,16 +39,14 @@ func getCoordinateFromBoardMark(board Board, mark string) Coordinate{
 }
 
 func loadNextBoard() {
-	boards := getBoards()
-
-	if currentBoardCounter >= len(boards) - 1 {
+	if currentBoardCounter >= len(boardList) - 1 {
 		alertMessage("Error: No boards left.")
 		return
 	}
 
 	currentBoardCounter++
 
-	board := boards[currentBoardCounter]
+	board := boardList[currentBoardCounter]
 	generateGridFromBoard(board)
 	fillGridFromBoard(board)
 	resetStatistics()
@@ -40,3 +55,56 @@ func loadNextBoard() {
 func stopSolvers(){
 	stopSolver = true
 }
+
+func generateRandomLevel(){
+
+	rand.Seed(time.Now().UnixNano())
+	randAmountOfRows := rand.Intn(30 - 5 + 1) + 5
+	randAmountOfColumns := rand.Intn(70 - 5 + 1) + 5
+
+	var board Board
+
+	for i := 0; i <= randAmountOfRows; i++ {
+
+		var boardRow []string
+
+		for j := 0; j <= randAmountOfColumns; j++ {
+
+			randMarkNumber := rand.Intn(10)
+
+			mark := ""
+
+			// Determine ratio
+			if randMarkNumber <= 6 {
+				mark = "#"
+			} else {
+				mark = "*"
+			}
+
+			boardRow = append(boardRow, mark)
+		}
+		board = append(board, boardRow)
+	}
+
+	// Set random player & goal
+	randomPlayerRow := rand.Intn(randAmountOfRows)
+	randomPlayerColumn := rand.Intn(randAmountOfColumns)
+	randomGoalRow := rand.Intn(randAmountOfRows)
+	randomGoalColumn := rand.Intn(randAmountOfColumns)
+
+	board[randomPlayerRow][randomPlayerColumn] = "p"
+	board[randomGoalRow][randomGoalColumn] = "e"
+
+	printBoardCopy(board)
+
+	boardList = append(boardList[:currentBoardCounter+1], boardList[currentBoardCounter:]...)
+	boardList[currentBoardCounter] = board
+	currentBoardCounter--
+
+	loadNextBoard()
+}
+
+func toggleSpeedMode(){
+	speedMode = !speedMode
+}
+

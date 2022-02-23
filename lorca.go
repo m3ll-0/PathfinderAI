@@ -15,6 +15,9 @@ import (
 // is executed in its own goroutine. In this simple case we may use atomic
 
 func setupLorca(){
+
+	initializeBoards()
+
 	ui.SetBounds(lorca.Bounds{
 		WindowState: lorca.WindowStateMaximized,
 	})
@@ -37,6 +40,8 @@ func setupLorca(){
 	ui.Bind("loadNextBoard", loadNextBoard)
 	ui.Bind("doPathFinding", doPathFinding)
 	ui.Bind("stopSolvers", stopSolvers)
+	ui.Bind("randomBoard", generateRandomLevel)
+	ui.Bind("toggleSpeedMode", toggleSpeedMode)
 
 	ln, err := net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {
