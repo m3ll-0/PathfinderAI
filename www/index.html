@@ -122,7 +122,7 @@
         </div>
         <div class="btn btn-solver-aStar">Run A*</div>
         <div class="btn btn-solver-DFS">Run DFS</div>
-        <div class="btn btn-solver-aStar-cancerous">Run BFS</div>
+        <div class="btn btn-solver-BFS">Run BFS</div>
         <div class="btn btn-load-next-board">Load next level</div>
         <div class="btn btn-random-board">Random level</div>
         <div class="btn btn-stop-solvers">Stop solvers</div>
@@ -141,7 +141,7 @@
     const counter = document.querySelector('.counter');
     const btnSolverDFS = document.querySelector('.btn-solver-DFS')
     const btnSolverAStar = document.querySelector('.btn-solver-aStar');
-    const btnSolverAStarCancerous = document.querySelector('.btn-solver-aStar-cancerous');
+    const btnSolverBFS = document.querySelector('.btn-solver-BFS');
     const btnLoadNextBoard = document.querySelector('.btn-load-next-board');
     const btnStopSolvers = document.querySelector('.btn-stop-solvers');
     const btnRandomBoard = document.querySelector('.btn-random-board');
@@ -165,8 +165,8 @@
         await doPathFinding("aStar"); // Call Go function
     });
 
-    btnSolverAStarCancerous.addEventListener('click', async () => {
-        await doPathFinding("aStarCancerous"); // Call Go function
+    btnSolverBFS.addEventListener('click', async () => {
+        await doPathFinding("BFS"); // Call Go function
     });
 
     btnStopSolvers.addEventListener('click', async () => {

@@ -4,6 +4,10 @@ import (
 	"fmt"
 )
 
+//*************************************************
+//******** These methods call JS functions ********
+//*************************************************
+
 func alertMessage(message string){
 	ui.Eval(fmt.Sprintf("alert('%v');", message))
 }
@@ -16,15 +20,7 @@ func setStatistics(totalAmountOfNodesVisited int, totalAmountOfTime string, tota
 	ui.Eval(fmt.Sprintf("setStatistics('%v', '%v', '%v');", totalAmountOfNodesVisited, totalAmountOfTime, totalPathLength))
 }
 
-func generateTableFromBoard(board Board){
-
-	// Get dimensions
-	rowDimension := len(board)
-	columnDimension := len(board[0])
-
-	// First generate grid and assign cell values coordinates
-	ui.Eval(fmt.Sprintf("generateGrid(%v,%v);", rowDimension, columnDimension))
-}
+//******** Table functions ********
 
 func generateCanvasFromBoard(board Board){
 
@@ -41,10 +37,6 @@ func updateTable(prevPlayerCoordinate Coordinate, curPlayerCoordinate Coordinate
 	ui.Eval(fmt.Sprintf("setCellBGColor(%v,%v,'%v', true);", curPlayerCoordinate.row, curPlayerCoordinate.column, "#07418a"))
 }
 
-func updateCanvas(prevPlayerCoordinate Coordinate, curPlayerCoordinate Coordinate){
-	ui.Eval(fmt.Sprintf("updateCanvasCell(%v,%v,'%v');", prevPlayerCoordinate.row, prevPlayerCoordinate.column, "#2383d6"))
-	ui.Eval(fmt.Sprintf("updateCanvasCell(%v,%v,'%v');", curPlayerCoordinate.row, curPlayerCoordinate.column, "#07418a"))
-}
 
 func fillTableFromBoard(board Board){
 	for rowCounter, row := range board{
@@ -63,6 +55,23 @@ func fillTableFromBoard(board Board){
 
 		}
 	}
+}
+
+//******** Canvas functions ********
+
+func generateTableFromBoard(board Board){
+
+	// Get dimensions
+	rowDimension := len(board)
+	columnDimension := len(board[0])
+
+	// First generate grid and assign cell values coordinates
+	ui.Eval(fmt.Sprintf("generateGrid(%v,%v);", rowDimension, columnDimension))
+}
+
+func updateCanvas(prevPlayerCoordinate Coordinate, curPlayerCoordinate Coordinate){
+	ui.Eval(fmt.Sprintf("updateCanvasCell(%v,%v,'%v');", prevPlayerCoordinate.row, prevPlayerCoordinate.column, "#2383d6"))
+	ui.Eval(fmt.Sprintf("updateCanvasCell(%v,%v,'%v');", curPlayerCoordinate.row, curPlayerCoordinate.column, "#07418a"))
 }
 
 func fillCanvasFromBoard(board Board){

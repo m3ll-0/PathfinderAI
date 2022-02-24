@@ -16,8 +16,6 @@ import (
 
 func setupLorca(){
 
-	initializeBoards()
-
 	ui.SetBounds(lorca.Bounds{
 		WindowState: lorca.WindowStateMaximized,
 	})
@@ -37,12 +35,7 @@ func setupLorca(){
 		log.Println("UI is ready")
 	})
 
-	ui.Bind("loadNextBoard", loadNextBoard)
-	ui.Bind("doPathFinding", doPathFinding)
-	ui.Bind("stopSolvers", stopSolvers)
-	ui.Bind("randomBoard", generateRandomLevel)
-	ui.Bind("toggleSpeedMode", toggleSpeedMode)
-	ui.Bind("toggleCanvasMode", toggleCanvasMode)
+	bindAllUIElements()
 
 	ln, err := net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {
@@ -62,4 +55,13 @@ func setupLorca(){
 	}
 
 	log.Println("exiting...")
+}
+
+func bindAllUIElements(){
+	ui.Bind("loadNextBoard", loadNextBoard)
+	ui.Bind("doPathFinding", doPathFinding)
+	ui.Bind("stopSolvers", stopSolvers)
+	ui.Bind("randomBoard", generateRandomLevel)
+	ui.Bind("toggleSpeedMode", toggleSpeedMode)
+	ui.Bind("toggleCanvasMode", toggleCanvasMode)
 }

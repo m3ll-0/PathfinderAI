@@ -171,7 +171,7 @@ func sortByDistanceFrom(nodes []*Node) {
 	})
 }
 
-func aStarCancerous(rootNode *Node) *Node {
+func BFS(rootNode *Node) *Node {
 
 	// Keep track of a general list of nodes, and add list of children to priorityQueue
 	var priorityQueue PriorityQueue
