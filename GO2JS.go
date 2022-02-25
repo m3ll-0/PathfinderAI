@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sync"
 )
 
 //*************************************************
@@ -37,23 +38,61 @@ func updateTable(prevPlayerCoordinate Coordinate, curPlayerCoordinate Coordinate
 	ui.Eval(fmt.Sprintf("setCellBGColor(%v,%v,'%v', true);", curPlayerCoordinate.row, curPlayerCoordinate.column, "#07418a"))
 }
 
+type cell struct {
+	coord Coordinate
+	mark string
+}
+
+var wg sync.WaitGroup
 
 func fillTableFromBoard(board Board){
+
+	var flatCellList []cell
+
+	// Create flat list of cells
 	for rowCounter, row := range board{
 		for columnCounter, column := range row {
-			if column == "#"{
-				ui.Eval(fmt.Sprintf("setCellBGColor(%v,%v,'%v');", rowCounter, columnCounter, "#5a5757"))
-			} else if column == "*" {
-				ui.Eval(fmt.Sprintf("setCellBGColor(%v,%v,'%v');", rowCounter, columnCounter, "red"))
-			} else if column == "p" {
-				ui.Eval(fmt.Sprintf("setCellBGColor(%v,%v,'%v', true);", rowCounter, columnCounter, "#07418a"))
-			}  else if column == "e" {
-				ui.Eval(fmt.Sprintf("setCellBGColor(%v,%v,'%v', true);", rowCounter, columnCounter, "green"))
-			} else if column == "o" {
-				ui.Eval(fmt.Sprintf("setCellBGColor(%v,%v,'%v', true);", rowCounter, columnCounter, "#2383d6"))
-			}
-
+			flatCellList = append(flatCellList, cell{coord: Coordinate{row: rowCounter, column: columnCounter}, mark: column})
 		}
+	}
+
+	// Create a list with length 10 of list of cells
+	cellListList := [10][]cell{}
+
+	// Divide cells over the 10 lists so that they can be run as separate threads
+	for cellNumber, cell := range flatCellList{
+		cellListList[cellNumber%10] = append(cellListList[cellNumber%10], cell)
+	}
+
+	sliceLength := 10 // numberOfThreads
+	wg.Add(sliceLength)
+
+	for _, cellList := range cellListList {
+		go startThreadFillCell(cellList) // Start thread for each list of cells
+	}
+
+	wg.Wait()
+}
+
+func startThreadFillCell(cells []cell){
+	for _, cell := range cells{
+		println("COLOR JS CELL MARK COORD" + fmt.Sprint(cell))
+		fillCell(cell.mark, cell.coord.row, cell.coord.column)
+	}
+	defer wg.Done()
+}
+
+func fillCell(mark string, row int, column int){
+	if mark == "#"{
+		ui.Eval(fmt.Sprintf("setCellBGColor(%v,%v,'%v');", row, column, "#5a5757"))
+	} else if mark == "*" {
+		ui.Eval(fmt.Sprintf("setCellBGColor(%v,%v,'%v');", row, column, "red"))
+	} else if mark == "p" {
+		ui.Eval(fmt.Sprintf("setCellBGColor(%v,%v,'%v', true);", row, column, "#07418a"))
+	}  else if mark == "e" {
+		ui.Eval(fmt.Sprintf("setCellBGColor(%v,%v,'%v', true);", row, column, "green"))
+	} else if mark == "o" {
+		ui.Eval(fmt.Sprintf("setCellBGColor(%v,%v,'%v', true);", row, column, "#2383d6"))
 	}
 }
 
