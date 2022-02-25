@@ -42,8 +42,17 @@ func doPathFinding(solverMethodString string){
 	timeStart = time.Now()
 	nodesVisitedCounter = 0
 
+	// Reset the board each time pathfinding is started using JS to speed up reload
+	loadCurrentBoard()
+
+	// Start solver
 	solvedNode := solverMethod(rootNode)
-	fillBoardMethod(solvedNode.board)
+
+	// Load current board again to prepare for backtracking
+	loadCurrentBoard()
+
+	// Start backtracking from solution to root node
+	backtrack(solvedNode)
 
 	setStatistics(nodesVisitedCounter, fmt.Sprint(time.Since(timeStart)), solvedNode.level)
 
@@ -66,7 +75,11 @@ func loadNextBoard() {
 	generateBoardMethod(board)
 
 	currentBoard = board // Set current board, so you can switch between canvas mode and table mode intermittently
+
 	fillBoardMethod(board)
+	saveCurrentBoard() // After filling the board, save the current board in JS for reloading purposes
+
+
 	resetStatistics()
 }
 

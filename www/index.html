@@ -217,6 +217,18 @@
         AITableContainer.appendChild(table)
     }
 
+    var board
+
+    function saveCurrentBoard(){
+        var AITableContainer = document.getElementById('ai-table-container')
+        board = AITableContainer.innerHTML
+    }
+
+    function loadCurrentBoard(){
+        var AITableContainer = document.getElementById('ai-table-container')
+        AITableContainer.innerHTML = board
+    }
+
     function setCellBGColor(row, col, bgcolor, makeRounded = false){
         var cellID = 'r'+row+"|"+'c'+col
         var cell = document.getElementById(cellID);

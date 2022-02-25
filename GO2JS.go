@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 	"sync"
 )
 
@@ -56,27 +57,32 @@ func fillTableFromBoard(board Board){
 		}
 	}
 
+	for i := range flatCellList {
+		j := rand.Intn(i + 1)
+		flatCellList[i], flatCellList[j] = flatCellList[j], flatCellList[i]
+	}
+
 	// Create a list with length 10 of list of cells
-	cellListList := [10][]cell{}
+	cellListList := [fillBoardThreads][]cell{}
 
 	// Divide cells over the 10 lists so that they can be run as separate threads
 	for cellNumber, cell := range flatCellList{
-		cellListList[cellNumber%10] = append(cellListList[cellNumber%10], cell)
+		cellListList[cellNumber%fillBoardThreads] = append(cellListList[cellNumber%fillBoardThreads], cell)
 	}
 
-	sliceLength := 10 // numberOfThreads
+	sliceLength := fillBoardThreads // numberOfThreads
 	wg.Add(sliceLength)
 
 	for _, cellList := range cellListList {
-		go startThreadFillCell(cellList) // Start thread for each list of cells
+		go threadFillCell(cellList) // Start thread for each list of cells
 	}
 
 	wg.Wait()
 }
 
-func startThreadFillCell(cells []cell){
+func threadFillCell(cells []cell){
 	for _, cell := range cells{
-		println("COLOR JS CELL MARK COORD" + fmt.Sprint(cell))
+		//println(fmt.Sprint(cell))
 		fillCell(cell.mark, cell.coord.row, cell.coord.column)
 	}
 	defer wg.Done()
@@ -131,4 +137,32 @@ func fillCanvasFromBoard(board Board){
 
 		}
 	}
+}
+
+func backtrack(node *Node){
+
+	// Set goal
+	ui.Eval(fmt.Sprintf("setCellBGColor(%v,%v,'%v', true);", node.currentPosition.row, node.currentPosition.column, "#07418a"))
+	for true {
+
+		node = node.parent
+
+		if node.parent == nil{
+			// Set starting node
+			ui.Eval(fmt.Sprintf("setCellBGColor(%v,%v,'%v', true);", node.currentPosition.row, node.currentPosition.column, "#2383d6"))
+			break
+		}
+
+		// Set intermediate node
+		ui.Eval(fmt.Sprintf("setCellBGColor(%v,%v,'%v', true);", node.currentPosition.row, node.currentPosition.column, "#2383d6"))
+	}
+
+}
+
+func loadCurrentBoard(){
+	ui.Eval("loadCurrentBoard()")
+}
+
+func saveCurrentBoard(){
+	ui.Eval("saveCurrentBoard()")
 }

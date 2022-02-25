@@ -17,6 +17,7 @@ var boardList = []Board{}
 var speedMode = true
 var canvasMode = false
 var currentBoard Board
+const fillBoardThreads = 10
 
 var updateBoardMethod UpdateBoardMethod
 var generateBoardMethod GenerateBoardMethod
